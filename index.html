@@ -163,10 +163,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       <p class="hd" id="ttl">هل ستشاركوننا فرحتنا؟</p>
       <div class="fm">
         <div id="fb">
-          <label>اسمك<input id="name" type="text" autocomplete="name" placeholder="الاسم بالكامل"></label>
+          <label>اسمك<input id="name" type="text" maxlength="100" autocomplete="name" placeholder="الاسم بالكامل"></label>
           <div class="ch" role="group" aria-label="الحضور"><button type="button" data-v="yes" aria-pressed="true">سأحضر بكل سرور</button><button type="button" data-v="no" aria-pressed="false">أعتذر للأسف</button></div>
           <label>عدد الحضور<select id="gs"><option>١</option><option selected>٢</option><option>٣</option><option>٤</option></select></label>
-          <label>رسالة للعروسين (اختياري)<textarea id="nt" rows="2"></textarea></label>
+          <label>رسالة للعروسين (اختياري)<textarea id="nt" rows="2" maxlength="500"></textarea></label>
           <p id="err">من فضلك اكتب اسمك لنعرف من يرد علينا.</p>
           <button class="pill" type="button" id="send">إرسال الرد</button>
         </div>
@@ -262,14 +262,38 @@ function tick(){var s=Math.max(0,Math.floor((T-new Date())/1000));$('d').textCon
 
 var ans='yes',bs=document.querySelectorAll('.ch button');
 bs.forEach(function(b){b.addEventListener('click',function(){ans=b.dataset.v;bs.forEach(function(x){x.setAttribute('aria-pressed',x===b)})})});
+/* RSVP -> Google Sheet (Apps Script web app). Paste the /exec URL below. */
+var SHEET_URL='https://script.google.com/macros/s/AKfycbzy4iVUVGo1sCzSyY2mB8-H56u8grULacviJ3Nvi3YWnQjfKvIMrWAp4ZLjpc09X2dDeg/exec';
+var sending=false,rid='',lastKey='';
+function uid(){return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function post(payload,tries){
+  var body=JSON.stringify(payload);
+  function attempt(n){
+    var ctl=window.AbortController?new AbortController():null,tm=setTimeout(function(){if(ctl)ctl.abort()},12000);
+    return fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:body,signal:ctl?ctl.signal:undefined})
+      .then(function(){clearTimeout(tm)},function(e){clearTimeout(tm);if(n>=tries)throw e;return new Promise(function(r){setTimeout(r,1200*n)}).then(function(){return attempt(n+1)})})
+  }
+  return attempt(1)
+}
 $('send').addEventListener('click',function(){
-  var n=$('name').value.trim();
-  if(!n){$('err').style.display='block';return}
-  $('err').style.display='none';
-  var msg='تأكيد حضور من: '+n+(ans==='yes'?' — سيحضر، وعدد الحضور: '+$('gs').value+'.':' — يعتذر عن الحضور.')+($('nt').value?' ملاحظة: '+$('nt').value:'');
-  window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(msg),'_blank');
-  $('tm').textContent=ans==='yes'?n+'، متشوقون للاحتفال معك.':n+'، سنفتقدك. شكرًا لإبلاغنا.';
-  $('fb').style.display='none';$('ttl').style.display='none';$('rl').style.display='none';$('ty').style.display='block';
+  if(sending)return;
+  var n=$('name').value.trim(),btn=this,err=$('err');
+  if(!n){err.textContent='من فضلك اكتب اسمك لنعرف من يرد علينا.';err.style.display='block';return}
+  err.style.display='none';
+  var yes=ans==='yes',note=$('nt').value.trim(),guests=yes?$('gs').selectedIndex+1:0;
+  function done(){
+    $('tm').textContent=yes?n+'، متشوقون للاحتفال معك.':n+'، سنفتقدك. شكرًا لإبلاغنا.';
+    $('fb').style.display='none';$('ttl').style.display='none';$('rl').style.display='none';$('ty').style.display='block';
+  }
+  if(!SHEET_URL){ /* not configured yet: fall back to WhatsApp */
+    var msg='تأكيد حضور من: '+n+(yes?' — سيحضر، وعدد الحضور: '+$('gs').value+'.':' — يعتذر عن الحضور.')+(note?' ملاحظة: '+note:'');
+    window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(msg),'_blank');done();return}
+  var key=[n,yes,guests,note].join('|');
+  if(!rid||key!==lastKey){rid=uid();lastKey=key}
+  sending=true;btn.disabled=true;btn.textContent='جارٍ الإرسال…';
+  post({id:rid,name:n,attending:yes?'سيحضر':'يعتذر',guests:guests,note:note},3).then(done,function(){
+    err.textContent='تعذّر الإرسال، تأكد من الاتصال بالإنترنت ثم اضغط إرسال مرة أخرى.';err.style.display='block'
+  }).then(function(){sending=false;btn.disabled=false;btn.textContent='إرسال الرد'});
 });
 })();
 </script>
