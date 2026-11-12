@@ -263,7 +263,7 @@ function tick(){var s=Math.max(0,Math.floor((T-new Date())/1000));$('d').textCon
 var ans='yes',bs=document.querySelectorAll('.ch button');
 bs.forEach(function(b){b.addEventListener('click',function(){ans=b.dataset.v;bs.forEach(function(x){x.setAttribute('aria-pressed',x===b)})})});
 /* RSVP -> Google Sheet (Apps Script web app). Paste the /exec URL below. */
-var SHEET_URL='https://script.google.com/macros/s/AKfycbzy4iVUVGo1sCzSyY2mB8-H56u8grULacviJ3Nvi3YWnQjfKvIMrWAp4ZLjpc09X2dDeg/exec';
+var SHEET_URL='https://script.google.com/macros/s/AKfycbx5T1ZOcwZrilYZgVhQRnD46x-koPTlQ-VMJj_JDwLQJLWoGn3VC9jxLAVTOZHyQfZC7Q/exec';
 var sending=false,rid='',lastKey='';
 function uid(){return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function post(payload,tries){
