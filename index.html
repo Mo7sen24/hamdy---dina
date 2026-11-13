@@ -132,6 +132,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media (prefers-reduced-motion:reduce){.dw .s,.dw .pop{opacity:1!important;stroke-dashoffset:0!important;transform:none!important;transition:none!important}.dw .fg{fill-opacity:.22}.dw .fw{fill-opacity:.14}
 .nx svg,.cv>*,#ty{animation:none}.in>*,.nx{transition-duration:.01s!important;transition-delay:0s!important}}
 @media (prefers-reduced-motion:reduce){.bg,.bg2,.intro,.veil,.pages,.page,.nav{transition-duration:.01s;transition-delay:0s}}
+.iv-t{font-size:clamp(1.5rem,6vw,1.9rem);color:var(--gd)}
+.fam{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:10px;margin:.9em 0 .6em;font-family:var(--ds)}
+.fam .fl1{font-size:clamp(1.1rem,4.4vw,1.35rem);font-weight:700;color:var(--mu)}
+.fnr{display:grid;grid-template-columns:1fr 1fr;column-gap:2px;margin:-.3em -16px .9em;font-family:var(--ds)}
+.fnr .fn{white-space:nowrap;font-size:clamp(.74rem,3.45vw,1.2rem);font-weight:700;line-height:1.6;color:var(--ink);text-shadow:0 1px 10px rgba(246,238,226,.9)}
+.fam .fh{width:26px;height:26px;fill:none;stroke:var(--gd);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.iv-b{margin-bottom:.2em}
 </style>
 </head>
 <body>
@@ -142,7 +149,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
   <div class="pages">
     <section class="page on" id="p0" aria-label="الرئيسية"><div class="in">
-      <p class="iv"><span>يتشرف أولاد المرحوم الحاج مصطفى حمدي درويش</span><span>وعائلة الأستاذ عبدالله محمد</span><span>بدعوتكم للاحتفال بزفاف نجليهما</span></p>
+<p class="iv iv-t">يتشرفان</p>
+      <div class="fam" aria-label="العائلتان">
+        <span class="fl1">عائلة المرحوم</span>
+        <svg class="fh" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20S3 14.5 3 8.5A4.5 4.5 0 0 1 12 6.5a4.5 4.5 0 0 1 9 2C21 14.5 12 20 12 20z"/></svg>
+        <span class="fl1">عائلة</span>
+      </div>
+      <div class="fnr"><span class="fn">الحاج/ مصطفى حمدي درويش</span><span class="fn">الأستاذ/ وحيد محمد أحمد</span></div>
+      <p class="iv iv-b">بدعوتكم للاحتفال بزفاف نجليهما</p>
       <h1 class="nm">حمدي <span>و</span> دينا</h1>
       <p class="dt">السبت</p>
       <p class="dt">٥ ديسمبر ٢٠٢٦</p>
